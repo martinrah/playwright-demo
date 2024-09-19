@@ -49,3 +49,60 @@ test("SCENARIO: User should not be able to access the e-shop without logging in.
 
     });
 });
+
+test("SCENARIO: User whos access is denied should not be able to log in.", async ({ page }) => {
+
+    const loginPage = new swagLogin(page);
+
+    await test.step("GIVEN: User has opened the Swag Labs login page.", async () => {
+
+        await loginPage.openLoginPage();
+
+    });
+
+    await test.step("WHEN: The credentials for locked out user are entered and login button is pressed.", async () => {
+
+        await loginPage.username.fill('locked_out_user');
+        await loginPage.password.fill('secret_sauce');
+        await loginPage.loginButton.click();
+
+    });
+
+    await test.step("THEN: The user should not be able to log in and receive respective warning", async () => {
+
+        await expect(page).not.toHaveURL(/.*inventory/);
+        await expect(loginPage.accessError).toBeVisible();
+        await expect(loginPage.accessError).toContainText("Epic sadface: Sorry, this user has been locked out.");
+
+    });
+});
+
+test("SCENARIO: User should be logged out once Logout button is pressed", async ({ page }) => {
+
+    const loginPage = new swagLogin(page);
+    const shopPage = new swagLabs(page);
+
+    await test.step("GIVEN: User has logged in and reached Swag Labs shop inventory page.", async () => {
+
+        await loginPage.loggedIn();
+        await expect(page).toHaveURL(/.*inventory/);
+
+    });
+
+    await test.step("WHEN: User selects Logout option from the Menu", async () => {
+
+        await shopPage.sideMenuButton.click();
+        await expect(shopPage.logOutButton).toBeVisible();
+        await shopPage.logOutButton.click();
+
+    });
+
+    await test.step("THEN: The user should be logged out and see the login screen again.", async () => {
+
+
+        await expect(page).not.toHaveURL(/.*inventory/);
+        await expect(loginPage.username).toBeVisible();
+        await expect(loginPage.password).toBeVisible();
+
+    });
+});

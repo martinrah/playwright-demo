@@ -19,4 +19,13 @@ exports.swagLogin = class swagLogin {
         await this.page.waitForLoadState("networkidle");
         await expect(this.page).toHaveTitle("Swag Labs");
     }
+
+    async loggedIn() {
+
+        await this.page.goto("https://www.saucedemo.com/");
+        await this.page.waitForLoadState("networkidle");
+        await this.username.fill('standard_user');
+        await this.password.fill('secret_sauce');
+        await this.loginButton.click();
+    }
 };
