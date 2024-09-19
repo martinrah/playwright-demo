@@ -8,8 +8,6 @@ test.describe.parallel("API testing", () => {
         const response = await request.get(baseURL + "/users/3");
         expect(response.status()).toBe(200);
 
-        const responseBody = JSON.parse(await response.text())
-        console.log(responseBody)
     })
 
     test("API Test - Assert Invalid Endpoint", async ({ request }) => {
@@ -29,7 +27,6 @@ test.describe.parallel("API testing", () => {
         expect(responseBody.data.last_name).toContain('Blu');
         expect(responseBody.data.email).toBeTruthy();
 
-        console.log(responseBody);
     })
 
     test("POST Request - Create New User", async ({ request }) => {
@@ -41,7 +38,6 @@ test.describe.parallel("API testing", () => {
         });
 
         const responseBody = JSON.parse(await response.text());
-        console.log(responseBody);
 
         expect(responseBody.id).toBe(1000);
         expect(responseBody.createdAt).toBeTruthy();
